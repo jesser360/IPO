@@ -1,0 +1,55 @@
+<p id="notice"><%= notice %></p>
+
+<div class='row'>
+  <div class='col-sm-3 text-center'>
+    <%= image_tag(@artist.avatar.url,:style =>"height:15vw;width:15vw;margin-bottom:-10px") %><br>
+    <h4 style='padding:1vw;background-color:black;color:white'><%= @artist.name %></h4>
+    <%= link_to edit_artist_path(@artist) do %>
+    <i style='float:right'class="glyphicon glyphicon-pencil "></i>
+    <%end%>
+    <div hidden class='text-left'>
+      <strong>Bio:</strong>
+      <%= @artist.bio %><br>
+      <strong>Hometown:</strong>
+      <%= @artist.hometown %>
+    </div>
+  </div>
+  <div class='col-md-5'>
+  </div>
+</div>
+<div class='row'>
+  <span style='float:right'>
+    <%= link_to "New Project", new_project_path(:artist => @artist) %>
+  </span>
+    <h4 class='text-center'><b>Activity/Projects</b></h4>
+  <table style='width:100%'>
+    <thead>
+      <tr >
+        <th class ='text-center'></th>
+        <th class ='text-center'>Date initiated</th>
+        <th class ='text-center'>Name</th>
+        <th class ='text-center'>Amount</th>
+        <th class ='text-center'>Info</th>
+        <th class ='text-center'>Release Date</th>
+        <th class ='text-center'>Paid</th>
+        <th class ='text-center'>Delivered</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @projects.each do |project| %>
+        <tr class ='text-center'>
+          <td><%= link_to 'Edit', edit_project_path(project) %></td>
+          <td><%= project.created_at.strftime('%m/%d/%Y') %></td>
+          <td><%= project.name %></td>
+          <td><%= project.amount %></td>
+          <td><%= project.info %></td>
+          <td><%= project.release.strftime('%m/%d/%Y') %></td>
+          <td>ICON</td>
+          <td>ICON</td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+</div>
+
+<br>
