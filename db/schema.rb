@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_06_230331) do
+ActiveRecord::Schema.define(version: 2018_08_07_173456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,19 @@ ActiveRecord::Schema.define(version: 2018_08_06_230331) do
     t.index ["user_id"], name: "index_artists_on_user_id"
   end
 
+  create_table "events", force: :cascade do |t|
+    t.string "title"
+    t.datetime "start"
+    t.datetime "end"
+    t.boolean "allday"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "artist_id"
+    t.string "genre"
+    t.string "note"
+    t.index ["artist_id"], name: "index_events_on_artist_id"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.bigint "artist_id"
     t.string "name"
@@ -37,6 +50,9 @@ ActiveRecord::Schema.define(version: 2018_08_06_230331) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "amount"
+    t.boolean "status"
+    t.boolean "delivered"
+    t.string "label"
     t.index ["artist_id"], name: "index_projects_on_artist_id"
   end
 
@@ -49,5 +65,6 @@ ActiveRecord::Schema.define(version: 2018_08_06_230331) do
   end
 
   add_foreign_key "artists", "users"
+  add_foreign_key "events", "artists"
   add_foreign_key "projects", "artists"
 end

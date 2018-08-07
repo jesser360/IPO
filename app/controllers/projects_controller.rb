@@ -20,6 +20,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
+    @project = Project.find_by_id(params[:id])
   end
 
   # POST /projects
@@ -29,8 +30,8 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
     @project.artist = @artist
     @project.release = params[:project][:release].gsub("/", "-")
-    puts @project.release
-    puts 'RELEASEEEEE'
+    @project.status = false
+    @project.delivered = false
     respond_to do |format|
       if @project.save
         format.html { redirect_to @artist, notice: 'Project was successfully created.' }
@@ -45,9 +46,11 @@ class ProjectsController < ApplicationController
   # PATCH/PUT /projects/1
   # PATCH/PUT /projects/1.json
   def update
+    @project = Project.find_by_id(params[:id])
+    @artist = @project.artist
     respond_to do |format|
       if @project.update(project_params)
-        format.html { redirect_to @project, notice: 'Project was successfully updated.' }
+        format.html { redirect_to @artist, notice: 'Project was successfully updated.' }
         format.json { render :show, status: :ok, location: @project }
       else
         format.html { render :edit }
@@ -74,6 +77,6 @@ class ProjectsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
-      params.require(:project).permit(:name, :release, :info, :amount)
+      params.require(:project).permit(:name, :release, :info, :amount, :status, :delivered,:label)
     end
 end

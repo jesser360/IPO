@@ -20,16 +20,28 @@
     <%= form.label :info %>
     <%= form.text_field :info %>
   </div>
-
   <div class="field">
     <%= form.label :amount %>
     <%= form.number_field :amount %>
   </div>
   <div class="field">
+    <%= form.label :label %>
+    <%= form.text_field :label %>
+  </div>
+  <div class="field">
     <%= form.label :release %>
     <%= form.text_field :release%>
   </div>
-  <%= hidden_field_tag 'artist', @artist.id  %>
+  <div class="field">
+    <%= form.label :Paid? %>
+    <%= form.check_box :status%>
+  </div>
+  <div class="field">
+    <%= form.label :delivered? %>
+    <%= form.check_box :delivered%>
+  </div>
+
+  <%= hidden_field_tag 'artist', @artist.id  if @artist%>
 
 
   <div class="actions">

@@ -12,6 +12,11 @@ class ArtistsController < ApplicationController
   def show
     @artist = Artist.find_by_id(params[:id])
     @projects = @artist.projects
+    @events =[]
+    @event_objects = @artist.events
+    @event_objects.each do |ev|
+      @events.push(ev.title,'20'+ev.start.strftime('%y-%m-%d'))
+    end
   end
 
   # GET /artists/new

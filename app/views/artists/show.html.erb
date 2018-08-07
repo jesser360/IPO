@@ -1,8 +1,8 @@
 <p id="notice"><%= notice %></p>
-
+<div class='container'>
 <div class='row'>
   <div class='col-sm-3 text-center'>
-    <%= image_tag(@artist.avatar.url,:style =>"height:15vw;width:15vw;margin-bottom:-10px") %><br>
+    <%= image_tag(@artist.avatar.url,:style =>"width:15vw;margin-bottom:-10px") %><br>
     <h4 style='padding:1vw;background-color:black;color:white'><%= @artist.name %></h4>
     <%= link_to edit_artist_path(@artist) do %>
     <i style='float:right'class="glyphicon glyphicon-pencil "></i>
@@ -15,11 +15,55 @@
     </div>
   </div>
   <div class='col-md-5'>
+    <!-- <span style='float:right'class = ' glyphicon glyphicon-th-list'></span> -->
+    <h4 class='text-center' style='margin-bottom:3vw'><b>Recent Updates</b></h4>
+    <%if @event_objects.present?%>
+    <table style='width:100%' class='event_list'>
+      <thead>
+        <tr >
+          <th class ='text-center'></th>
+          <th class ='text-center'>Genre</th>
+          <th class ='text-center'>Name</th>
+          <th class ='text-center'>Date</th>
+        </tr>
+      </thead>
+      <tbody >
+      <%@event_objects.each do |event| %>
+          <tr class ='text-center spaceUnder' style='margin:10px'>
+            <td>
+              <%= link_to "edit",edit_event_path(event),{:class =>'black-btn',:style=>'padding:10px;border-radius:100px'} %>
+            </td>
+            <td><%=event.genre %></td>
+            <td><b><%=event.title %></b><br><span style='font-size:.8em'><%=event.note%></span></td>
+            <td><%=event.start.strftime('%m/%d/%Y')  %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <%else%>
+        <h4>*No Events Scheduled Yet</h4>
+      <%end%>
+    <div hidden class="section_event">
+      <hr>
+      <span style='float:right'class = ' close_event glyphicon glyphicon-remove'></span>
+      <label>Create Event for </label><span class='date_event'></span><br>
+      <b>Title:</b>
+      <input id='input_t' class='input_text e_input'></input><br>
+      <b>Notes:</b>
+      <input id='input_n' class='input_note e_input'></input><br>
+      <b>Genre:</b>
+      <input id='input_g' class='input_genre e_input'></input><br>
+      <button class='submit_event black-btn'>Submit</button>
+    </div>
+  </div>
+  <div class='col-md-4'>
+    <div class="calendar"></div>
   </div>
 </div>
+<br>
 <div class='row'>
   <span style='float:right'>
-    <%= link_to "New Project", new_project_path(:artist => @artist) %>
+    <%= link_to "Add New Activity",new_project_path(:artist => @artist),{:class =>'black-btn'} %>
   </span>
     <h4 class='text-center'><b>Activity/Projects</b></h4>
   <table style='width:100%'>
@@ -30,26 +74,122 @@
         <th class ='text-center'>Name</th>
         <th class ='text-center'>Amount</th>
         <th class ='text-center'>Info</th>
-        <th class ='text-center'>Release Date</th>
+        <th class ='text-center'>Label</th>
         <th class ='text-center'>Paid</th>
         <th class ='text-center'>Delivered</th>
       </tr>
     </thead>
     <tbody>
     <% @projects.each do |project| %>
-        <tr class ='text-center'>
-          <td><%= link_to 'Edit', edit_project_path(project) %></td>
+        <tr class ='text-center spaceUnder' style='margin:10px'>
+          <td>
+            <%= link_to "Edit",edit_project_path(project),{:class =>'black-btn'} %>
+          </td>
           <td><%= project.created_at.strftime('%m/%d/%Y') %></td>
-          <td><%= project.name %></td>
-          <td><%= project.amount %></td>
-          <td><%= project.info %></td>
-          <td><%= project.release.strftime('%m/%d/%Y') %></td>
-          <td>ICON</td>
-          <td>ICON</td>
+          <td><i style='font-size:.8em'>Feature from</i><br><b><%= project.name %></b></td>
+          <td style='color:green'>$<%= project.amount %></td>
+          <td><i>"<%= project.info %>"</i><br><span style='font-size:.8em'>FT Young Thug</span></td>
+          <td><%= project.label %></td>
+          <td><%= if project.status then image_tag('green.png',:style =>"width:2vw") else image_tag('x-mark.png',:style =>"width:2vw") end%></td>
+          <td><%= if project.delivered then image_tag('green.png',:style =>"width:2vw") else image_tag('x-mark.png',:style =>"width:2vw") end%></td>
         </tr>
       <% end %>
       </tbody>
     </table>
+  </div>
 </div>
+<span hidden class ='events'><%=@events%></span>
+<script>
+var artist_id = "<%=@artist.id%>"
+var events = $('.events').text()
+var split_events = events.split('"')
+events_array = []
+for(var i=1;i<=split_events.length;i+=4){
+  events_array.push( {'title' : split_events[i], 'start' : split_events[i+2]})
+}
+$('.close_event').on('click',function(){
+  $('.section_event').hide();
+  $('.event_list').show();
+});
+$('.calendar').fullCalendar({
+  eventSources: [
+    {
+      events:events_array,
+      color: 'black',     // an option!
+      textColor: 'lightgray' // an option!
+    }
+  ],
+  selectable:true,
+  unselectAuto:true,
+ dayClick: function(date, jsEvent, view) {
+  // select: function(start, end, allDay) {
+    var clicked_date = date.format()
+    $('.section_event').show();
+    $('.event_list').hide();
+    $('.date_event').html(date.format());
+    $('.submit_event').on('click',function(){
+      setTimeout(function(){
+        $('.section_event').hide();
+        $('.event_list').show();
+        var input_text = $('.input_text').val()
+        var input_genre = $('.input_genre').val()
+        var input_note = $('.input_note').val()
+        $('.calendar').fullCalendar('renderEvent',
+        {
+          title: input_text,
+          genre: input_genre,
+          note: input_note,
+          start: clicked_date,
+          end: clicked_date,
+          allDay: true,
+          color: 'black',     // an option!
+          textColor: 'lightgray' // an option!
+        },
+        true // make the event "stick"
+      );
+      jQuery.post(
+        "/events" // your url
+        , { // re-use event's data
+        title: input_text,
+        genre: input_genre,
+        note: input_note,
+        start: clicked_date,
+        end: clicked_date,
+        allday: false,
+        artist_id: artist_id
+      }
+    );
+    $('.calendar').fullCalendar('unselect');
+  },100)
+    })
+}
+});
+</script>
 
-<br>
+<style>
+.event_list {
+  border-collapse: collapse;
+  overflow-y:scroll;
+  height:200px;
+  display:block;
+}
+tr {
+  border: solid;
+  border-width: 1px 0;
+}
+tr:first-child {
+  border-top: none;
+}
+tr:last-child {
+  border-bottom: none;
+}
+tr.spaceUnder>td {
+  padding: 1em;
+}
+.e_input{
+  margin:5px;
+}
+.close_event:hover{
+  color:darkgray;
+}
+</style>

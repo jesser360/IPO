@@ -1,31 +1,32 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Artists</h1>
+<%= link_to "New Artist",new_artist_path,{:class =>'black-btn',:style=>'float:right;padding:10px;border-radius:100px'} %>
+<h3><i>Artist Roster</h3></i>
 
-<table>
-  <thead>
-    <tr >
-      <th class ='text-center'>Name</th>
-      <th class ='text-center'>Bio</th>
-      <th class ='text-center'>Hometown</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @artists.each do |artist| %>
-      <tr class ='text-center'>
-        <td><%= artist.name %></td>
-        <td><%= artist.bio %></td>
-        <td><%= artist.hometown %></td>
-        <td><%= link_to 'Show', artist %></td>
-        <td><%= link_to 'Edit', edit_artist_path(artist) %></td>
-        <td><%= link_to 'Destroy', artist, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
+<div class='row'>
+  <%@artists.each do |artist|%>
+    <div class='col-sm-6' >
+      <a class='artist_div' href='artists/<%=artist.id%>'>
+      <div class='row' style='height:10vw;margin:1vw;background-color:lightgray;border-radius:20px;padding:10px'>
+        <div class='col-md-3'>
+          <%= image_tag(artist.avatar.url,:style =>"width:6vw;") %>
+        </div>
+        <div class='col-md-5'>
+          <h4><b><%=artist.name%></b></h4>
+        </div>
+        <div class='col-md-4'>
+          <H6><b><%=artist.events.count%> upcoming events</b></H6>
+          <h6><b><%=artist.projects.count%> current projects</b></h6>
+        </div>
+      </div>
+    </a>
+    </div>
+  <%end%>
+</div>
 <br>
 
-<%= link_to 'New Artist', new_artist_path %>
+<style>
+a.artist_div:hover{
+  color:#3c3b3b !important;
+}
+</style>

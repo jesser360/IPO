@@ -5,4 +5,5 @@ class Artist < ApplicationRecord
 
   belongs_to :user
   has_many :projects
+  has_many :events
 end
